@@ -1,6 +1,6 @@
-local path_ok, plenary_path = pcall(require, 'plenary.path')
+local path_ok, plenary_path = pcall(require, "plenary.path")
 if not path_ok then
-  return
+  return {}
 end
 
 local potential_headers = {
@@ -140,18 +140,6 @@ local potential_headers = {
   },
 }
 
-local header = {
-  type = 'text',
-  opts = {
-    position = 'center',
-    hl = 'Type',
-  },
-}
-
-math.randomseed(os.time())
-header.val = potential_headers[math.random(1, #potential_headers)]
-
-local cdir = vim.fn.getcwd()
 
 local nvim_web_devicons = {
   enabled = true,
@@ -159,16 +147,16 @@ local nvim_web_devicons = {
 }
 
 local function get_extension(fn)
-  local match = fn:match '^.+(%..+)$'
-  local ext = ''
+  local match = fn:match("^.+(%..+)$")
+  local ext = ""
   if match ~= nil then
     ext = match:sub(2)
   end
   return ext
 end
 
-local nwd = require 'nvim-web-devicons'
 local function icon(fn)
+  local nwd = require("nvim-web-devicons")
   if nwd then
     local ext = get_extension(fn)
     return nwd.get_icon(fn, ext, { default = true })
@@ -183,40 +171,41 @@ local function file_button(fn, sc, short_fn, autocd)
   if nvim_web_devicons.enabled then
     local ico, hl = icon(fn)
     local hl_option_type = type(nvim_web_devicons.highlight)
-    if hl_option_type == 'boolean' then
+    if hl_option_type == "boolean" then
       if hl and nvim_web_devicons.highlight then
         table.insert(fb_hl, { hl, 0, #ico })
       end
     end
-    if hl_option_type == 'string' then
+    if hl_option_type == "string" then
       table.insert(fb_hl, { nvim_web_devicons.highlight, 0, #ico })
     end
-    ico_txt = ico .. '  '
+    ico_txt = ico .. "  "
   else
-    ico_txt = ''
+    ico_txt = ""
   end
-  local cd_cmd = (autocd and ' | cd %:p:h' or '')
-  local file_button_el = require('alpha.themes.dashboard').button(sc, ico_txt .. short_fn, '<cmd>e ' .. vim.fn.fnameescape(fn) .. cd_cmd .. ' <CR>')
-  local fn_start = short_fn:match '.*[/\\]'
+  local cd_cmd = (autocd and " | cd %:p:h" or "")
+  local file_button_el = require("alpha.themes.dashboard").button(
+    sc,
+    ico_txt .. short_fn,
+    "<cmd>e " .. vim.fn.fnameescape(fn) .. cd_cmd .. " <CR>"
+  )
+  local fn_start = short_fn:match(".*[/\\]")
   if fn_start ~= nil then
-    table.insert(fb_hl, { 'Comment', #ico_txt - 2, #fn_start + #ico_txt })
+    table.insert(fb_hl, { "Comment", #ico_txt - 2, #fn_start + #ico_txt })
   end
   file_button_el.opts.hl = fb_hl
   return file_button_el
 end
 
-local default_mru_ignore = { 'gitcommit' }
+local default_mru_ignore = { "gitcommit" }
 
 local mru_opts = {
   ignore = function(path, ext)
-    return (string.find(path, 'COMMIT_EDITMSG')) or (vim.tbl_contains(default_mru_ignore, ext))
+    return (string.find(path, "COMMIT_EDITMSG")) or (vim.tbl_contains(default_mru_ignore, ext))
   end,
   autocd = false,
 }
 
---- @param start number
---- @param cwd string? optional
---- @param items_number number? optional number of items to generate, default = 10
 local function mru(start, cwd, items_number, opts)
   opts = opts or mru_opts
   items_number = vim.F.if_nil(items_number, 10)
@@ -243,9 +232,9 @@ local function mru(start, cwd, items_number, opts)
   for i, fn in ipairs(oldfiles) do
     local short_fn
     if cwd then
-      short_fn = vim.fn.fnamemodify(fn, ':.')
+      short_fn = vim.fn.fnamemodify(fn, ":.")
     else
-      short_fn = vim.fn.fnamemodify(fn, ':~')
+      short_fn = vim.fn.fnamemodify(fn, ":~")
     end
 
     if #short_fn > target_width then
@@ -257,95 +246,116 @@ local function mru(start, cwd, items_number, opts)
 
     local shortcut = tostring(i + start - 1)
 
-    local file_button_el = file_button(fn, 'r' .. shortcut, short_fn, opts.autocd)
+    local file_button_el = file_button(fn, "r" .. shortcut, short_fn, opts.autocd)
     tbl[i] = file_button_el
   end
   return {
-    type = 'group',
+    type = "group",
     val = tbl,
     opts = {},
   }
 end
 
-local section_mru = {
-  type = 'group',
-  val = {
-    {
-      type = 'text',
-      val = 'Recent files',
-      opts = {
-        hl = 'Comment',
-        shrink_margin = false,
-        position = 'center',
-      },
-    },
-    { type = 'padding', val = 1 },
-    {
-      type = 'group',
-      val = function()
-        return { mru(0, cdir) }
-      end,
-      opts = { shrink_margin = false },
-    },
-  },
-}
-
 local function tableInsertMult(list, ...)
-  for _, v in ipairs { ... } do
+  for _, v in ipairs({ ... }) do
     list[#list + 1] = v
   end
 end
 
 local function make_buttons()
-  local dashboard = require 'alpha.themes.dashboard'
-  local harpoon = require 'harpoon'
+  local dashboard = require("alpha.themes.dashboard")
+  local harpoon_ok, harpoon = pcall(require, "harpoon")
   local buttons = {
-    type = 'group',
-    position = 'center',
+    type = "group",
+    position = "center",
     val = {
-      { type = 'text', val = 'Harpoon', opts = { hl = 'Comment', position = 'center' } },
-      { type = 'padding', val = 1 },
+      { type = "text",    val = "Harpoon", opts = { hl = "Comment", position = "center" } },
+      { type = "padding", val = 1 },
     },
   }
-  table.insert(buttons.val, dashboard.button('h', '   Open harpoon window', ':lua require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())<CR>'))
-  for i = 1, #harpoon:list().items do
-    table.insert(buttons.val, file_button(harpoon:list().items[i].value, tostring(i), false))
+
+  if harpoon_ok then
+    table.insert(
+      buttons.val,
+      dashboard.button("h", "   Open harpoon window",
+        ':lua require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())<CR>')
+    )
+    for i = 1, #harpoon:list().items do
+      table.insert(buttons.val, file_button(harpoon:list().items[i].value, tostring(i), false))
+    end
   end
+
   tableInsertMult(
     buttons.val,
-    { type = 'padding', val = 1 },
-    { type = 'text', val = 'Quick Links', opts = { hl = 'Comment', position = 'center' } },
-    { type = 'padding', val = 1 },
-    dashboard.button('n', '  New file', ':ene <BAR> startinsert <CR>'),
-    dashboard.button('c', '  Configuration', '<cmd>cd $NVIM_CONFIG <BAR> e init.lua<CR>'),
-    dashboard.button('l', 'z  Lazy', ':Lazy<CR>'),
-    dashboard.button('m', 'm  Mason', ':Mason<CR>'),
-    dashboard.button('q', '×  Quit', ':qa<CR>')
+    { type = "padding", val = 1 },
+    { type = "text", val = "Quick Links", opts = { hl = "Comment", position = "center" } },
+    { type = "padding", val = 1 },
+    dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
+    dashboard.button("c", "  Configuration", ":lua require('lazyvim.util').telescope.config_files()()<CR>"),
+    dashboard.button("l", "z  Lazy", ":Lazy<CR>"),
+    dashboard.button("m", "m  Mason", ":Mason<CR>"),
+    dashboard.button("q", "×  Quit", ":qa<CR>")
   )
 
   return buttons
 end
 
 return {
-  'goolord/alpha-nvim',
-  priority = 50,
-  dependencies = { 'nvim-tree/nvim-web-devicons' },
+  "goolord/alpha-nvim",
+  event = "VimEnter",
+  dependencies = { "nvim-tree/nvim-web-devicons", "nvim-lua/plenary.nvim" },
   config = function()
-    local alpha = require 'alpha'
-    local theta = require 'alpha.themes.theta'
-    -- local dashboard = require('alpha.themes.dashboard')
-    -- local harpoon = require('harpoon')
+    local alpha = require("alpha")
+    local dashboard = require("alpha.themes.dashboard")
+    local theta = require("alpha.themes.theta")
+
+    local header = {
+      type = "text",
+      opts = {
+        position = "center",
+        hl = "Type",
+      },
+    }
+
+    math.randomseed(os.time())
+    header.val = potential_headers[math.random(1, #potential_headers)]
+
+    local cdir = vim.fn.getcwd()
+
+    local section_mru = {
+      type = "group",
+      val = {
+        {
+          type = "text",
+          val = "Recent files",
+          opts = {
+            hl = "Comment",
+            shrink_margin = false,
+            position = "center",
+          },
+        },
+        { type = "padding", val = 1 },
+        {
+          type = "group",
+          val = function()
+            return { mru(0, cdir) }
+          end,
+          opts = { shrink_margin = false },
+        },
+      },
+    }
+
     local layout = {
-      { type = 'padding', val = 5 },
+      { type = "padding", val = 5 },
       header,
-      { type = 'padding', val = 1 },
-      { type = 'text', val = 'cwd: ' .. vim.fn.getcwd(), opts = { hl = 'Constant', position = 'center' } },
-      { type = 'padding', val = 2 },
+      { type = "padding", val = 1 },
+      { type = "text",    val = "cwd: " .. vim.fn.getcwd(), opts = { hl = "Constant", position = "center" } },
+      { type = "padding", val = 2 },
       section_mru,
-      { type = 'padding', val = 2 },
+      { type = "padding", val = 2 },
       make_buttons(),
-      { type = 'padding', val = 2 },
-      { type = 'text', val = 'Be just 1% better today', opts = { hl = 'Comment', position = 'center' } },
+      { type = "padding", val = 2 },
+      { type = "text",    val = "Be just 1% better today", opts = { hl = "Comment", position = "center" } },
     }
 
     theta.config.layout = layout
