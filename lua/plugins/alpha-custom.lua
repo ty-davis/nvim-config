@@ -140,7 +140,6 @@ local potential_headers = {
   },
 }
 
-
 local nvim_web_devicons = {
   enabled = true,
   highlight = true,
@@ -269,7 +268,7 @@ local function make_buttons()
     type = "group",
     position = "center",
     val = {
-      { type = "text",    val = "Harpoon", opts = { hl = "Comment", position = "center" } },
+      { type = "text", val = "Harpoon", opts = { hl = "Comment", position = "center" } },
       { type = "padding", val = 1 },
     },
   }
@@ -277,8 +276,11 @@ local function make_buttons()
   if harpoon_ok then
     table.insert(
       buttons.val,
-      dashboard.button("h", "   Open harpoon window",
-        ':lua require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())<CR>')
+      dashboard.button(
+        "h",
+        "   Open harpoon window",
+        ':lua require("harpoon").ui:toggle_quick_menu(require("harpoon"):list())<CR>'
+      )
     )
     for i = 1, #harpoon:list().items do
       table.insert(buttons.val, file_button(harpoon:list().items[i].value, tostring(i), false))
@@ -290,11 +292,11 @@ local function make_buttons()
     { type = "padding", val = 1 },
     { type = "text", val = "Quick Links", opts = { hl = "Comment", position = "center" } },
     { type = "padding", val = 1 },
-    dashboard.button("n", "  New file", ":ene <BAR> startinsert <CR>"),
-    dashboard.button("c", "  Configuration", ":lua require('lazyvim.util').telescope.config_files()()<CR>"),
-    dashboard.button("l", "z  Lazy", ":Lazy<CR>"),
-    dashboard.button("m", "m  Mason", ":Mason<CR>"),
-    dashboard.button("q", "×  Quit", ":qa<CR>")
+    dashboard.button("n", "󰈔  New file", ":ene <BAR> startinsert <CR>"),
+    dashboard.button("c", "  Configuration", ":lua require('lazyvim.util').telescope.config_files()()<CR>"),
+    dashboard.button("l", "󰒲  Lazy", ":Lazy<CR>"),
+    dashboard.button("m", "󱁤  Mason", ":Mason<CR>"),
+    dashboard.button("q", "󰩈  Quit", ":qa<CR>")
   )
 
   return buttons
@@ -349,13 +351,13 @@ return {
       { type = "padding", val = 5 },
       header,
       { type = "padding", val = 1 },
-      { type = "text",    val = "cwd: " .. vim.fn.getcwd(), opts = { hl = "Constant", position = "center" } },
+      { type = "text", val = "cwd: " .. vim.fn.getcwd(), opts = { hl = "Constant", position = "center" } },
       { type = "padding", val = 2 },
       section_mru,
       { type = "padding", val = 2 },
       make_buttons(),
       { type = "padding", val = 2 },
-      { type = "text",    val = "Be just 1% better today", opts = { hl = "Comment", position = "center" } },
+      { type = "text", val = "Be just 1% better today", opts = { hl = "Comment", position = "center" } },
     }
 
     theta.config.layout = layout
