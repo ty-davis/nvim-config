@@ -37,6 +37,7 @@ end
 vim.defer_fn(function()
   darken_bg("CursorLine", { "CursorLine" }, 0.5)
   darken_bg("ColorColumn", { "RenderMarkdownCode", "RenderMarkdownCodeInline" }, 0.6)
+  vim.diagnostic.config({ virtual_text = false })
 end, 100)
 
 -- Also apply on ColorScheme changes
