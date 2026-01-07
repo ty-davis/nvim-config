@@ -23,7 +23,8 @@ vim.api.nvim_set_hl(0, "NeoTreeWinSeparator", { bg = "none" })
 vim.api.nvim_set_hl(0, "NeoTreeEndOfBuffer", { bg = "none" })
 
 -- visible window separators for splits
-vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#2f3f3b", bg = "none" })
+local comment_hl = vim.api.nvim_get_hl(0, { name = "Comment" })
+vim.api.nvim_set_hl(0, "WinSeparator", { fg = comment_hl.fg, bg = "none" })
 
 -- transparent background for nvim-tree
 vim.api.nvim_set_hl(0, "NvimTreeNormal", { bg = "none" })
