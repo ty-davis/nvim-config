@@ -6,5 +6,5 @@ return {
         require("nvim-surround").setup({
             -- Config goes here
         })
-    end
+    end,
 }

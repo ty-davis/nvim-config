@@ -1,3 +1,3 @@
 return {
-  'bitpoke/wordpress.nvim',
+    "bitpoke/wordpress.nvim",
 }
