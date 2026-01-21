@@ -50,3 +50,68 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     end, 10)
   end,
 })
+
+-- Filetype-specific indentation settings
+
+-- Programming languages: 4 spaces
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {
+    "lua",
+    "python",
+    "java",
+    "c",
+    "cpp",
+    "csharp",
+    "rust",
+    "php",
+    "ruby",
+    "swift",
+    "kotlin",
+    "scala",
+    "perl",
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+  },
+  callback = function()
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.expandtab = true
+  end,
+})
+
+-- Go: 4-space tabs (Go convention)
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "go",
+  callback = function()
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
+    vim.opt_local.expandtab = false
+  end,
+})
+
+-- Markup and web languages: 2 spaces
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {
+    "html",
+    "xml",
+    "css",
+    "scss",
+    "sass",
+    "less",
+    "json",
+    "jsonc",
+    "yaml",
+    "yml",
+    "markdown",
+    "vue",
+    "svelte",
+    "astro",
+  },
+  callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.expandtab = true
+  end,
+})
