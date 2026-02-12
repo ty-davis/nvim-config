@@ -85,6 +85,9 @@ return {
         "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
         "MunifTanjim/nui.nvim",
     },
+    keys = {
+        { "<leader>e", false }, -- Disable default <leader>e to use diagnostics instead
+    },
     config = function()
         require("neo-tree").setup({
             filesystem = {
